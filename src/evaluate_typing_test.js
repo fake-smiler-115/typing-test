@@ -1,25 +1,30 @@
-const color = (char) => "\x1b[2m" + char + "\x1b[0m";
+const semiVisual = (string) => "\x1b[2m" + string + "\x1b[0m";
 
-const formatSentence = (sentence, index) =>
-  color(sentence.slice(0, index + 1)) +
-  sentence[index + 1] + color(sentence.slice(index + 2, index + 30));
+const visual = (string) => "\x1b[33m" + string + "\x1b[0m"
 
-const printTimer = (start) => 120 - (Math.floor( Math.abs(start - Date.now())/ 1000));
+const formatSentence = (text, index) =>
+  visual(text.slice(0, index + 1)) +
+  text[index + 1] + semiVisual(text.slice(index + 2, index + 30));
 
-export const evaluateTypingTest = async (sentence) => {
+const calaculateTime = (start,time) => time - (Math.floor( Math.abs(start - Date.now())/ 1000));
+
+export const evaluateTypingTest = async (text,time) => {
   const decoder = new TextDecoder();
   const reader = Deno.stdin.readable.getReader();
+  let attempts = 0;
   let index = 0;
-  let timer = 120;
+  let timer = time;
   const start = Date.now();
-  while (timer > 90) { 
+  while (timer > 0) { 
     const { value, done } = await reader.read();
-    if (decoder.decode(value) === sentence[index]) {
+    attempts++;
+    if (decoder.decode(value) !== text[index]) continue;
       console.clear();
-      timer = printTimer(start);
+      timer = calaculateTime(start,time);
       console.log('\t\t\t\t\t\t\t\t ' + timer);
-      console.log(formatSentence(sentence, index));
+      console.log(formatSentence(text, index));
       index++;
-    }
-  }
+}
+
+  return [index, attempts];
 };
