@@ -1,6 +1,6 @@
 const semiVisual = (string) => "\x1b[2m" + string + "\x1b[0m";
 
-const visual = (string) => "\x1b[33m" + string + "\x1b[0m"
+const visual = (string) => "\x1b[33m" + string + "\x1b[0m";
 
 const formatSentence = (text, index) =>
   visual(text.slice(0, index + 1)) +
